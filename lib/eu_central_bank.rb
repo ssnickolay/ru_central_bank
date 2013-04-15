@@ -9,7 +9,7 @@ class EuCentralBank < Money::Bank::VariableExchange
 
   attr_accessor :last_updated
 
-  ECB_RATES_URL = 'http://www.ecb.int/stats/eurofxref/eurofxref-daily.xml'
+  ECB_RATES_URL = 'http://www.cbr.ru/scripts/XML_daily.asp?date_req=15/04/2013'
   CURRENCIES = %w(USD JPY BGN CZK DKK GBP HUF ILS LTL LVL PLN RON SEK CHF NOK HRK RUB TRY AUD BRL CAD CNY HKD IDR INR KRW MXN MYR NZD PHP SGD THB ZAR)
 
   def update_rates(cache=nil)
@@ -48,24 +48,36 @@ class EuCentralBank < Money::Bank::VariableExchange
 
   protected
 
+  #def exchange_rates(cache=nil)
+  #  rates_source = !!cache ? cache : ECB_RATES_URL
+  #  doc = Nokogiri::XML(open(rates_source))
+  #  doc.xpath('gesmes:Envelope/xmlns:Cube/xmlns:Cube//xmlns:Cube')
+  #end
+#
+  #def exchange_rates_from_s(content)
+  #  doc = Nokogiri::XML(content)
+  #  doc.xpath('gesmes:Envelope/xmlns:Cube/xmlns:Cube//xmlns:Cube')
+  #end
+
   def exchange_rates(cache=nil)
     rates_source = !!cache ? cache : ECB_RATES_URL
     doc = Nokogiri::XML(open(rates_source))
-    doc.xpath('gesmes:Envelope/xmlns:Cube/xmlns:Cube//xmlns:Cube')
+    doc.xpath('xmlns:ValCurs//xmlns:Valute')
   end
 
   def exchange_rates_from_s(content)
     doc = Nokogiri::XML(content)
-    doc.xpath('gesmes:Envelope/xmlns:Cube/xmlns:Cube//xmlns:Cube')
+    doc.xpath('xmlns:ValCurs//xmlns:Valute')
   end
 
   def update_parsed_rates(rates)
     rates.each do |exchange_rate|
-      rate = exchange_rate.attribute("rate").value.to_f
-      currency = exchange_rate.attribute("currency").value
-      add_rate("EUR", currency, rate)
+      rate = exchange_rate.attribute("Value").value.to_f
+      currency = exchange_rate.attribute("CharCode").value
+      debugger
+      add_rate("RUB", currency, rate)
     end
-    add_rate("EUR", "EUR", 1)
+    add_rate("RUB", "RUB", 1)
     @last_updated = Time.now
   end
 end
