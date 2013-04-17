@@ -9,7 +9,7 @@ class EuCentralBank < Money::Bank::VariableExchange
 
   attr_accessor :last_updated
 
-  ECB_RATES_URL = 'http://www.cbr.ru/scripts/XML_daily.asp?date_req=15/04/2013'
+  ECB_RATES_URL = 'http://www.cbr.ru/scripts/XML_daily.asp?date_req=17/04/2013'
   CURRENCIES = %w(USD JPY BGN CZK DKK GBP HUF ILS LTL LVL PLN RON SEK CHF NOK HRK RUB TRY AUD BRL CAD CNY HKD IDR INR KRW MXN MYR NZD PHP SGD THB ZAR)
 
   def update_rates(cache=nil)
@@ -72,14 +72,11 @@ class EuCentralBank < Money::Bank::VariableExchange
 
   def update_parsed_rates(rates)
     rates.each do |exchange_rate|
-      debugger
-      #xml_exchange_rate = Nokogiri::XML(exchange_rate)
-      currency = xml_exchange_rate.xpath('/CharCode').content
-      rate = xml_exchange_rate.xpath('/Value').content.to_f
+      currency = exchange_rate.search('CharCode').children[0].content
+      rate = exchange_rate.search('Value').children[0].content.to_f
 
       #rate = exchange_rate.attribute("Value").value.to_f
       #currency = exchange_rate.attribute("CharCode").value
-      debugger
       add_rate("RUB", currency, rate)
     end
     add_rate("RUB", "RUB", 1)
