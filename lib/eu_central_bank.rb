@@ -71,10 +71,9 @@ class EuCentralBank < Money::Bank::VariableExchange
   end
 
   def update_parsed_rates(rates)
-    debugger
     rates.each do |exchange_rate|
-      xml_exchange_rate = Nokogiri::XML(exchange_rate)
-
+      debugger
+      #xml_exchange_rate = Nokogiri::XML(exchange_rate)
       currency = xml_exchange_rate.xpath('/CharCode').content
       rate = xml_exchange_rate.xpath('/Value').content.to_f
 
