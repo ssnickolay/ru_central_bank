@@ -77,7 +77,11 @@ class EuCentralBank < Money::Bank::VariableExchange
 
       #rate = exchange_rate.attribute("Value").value.to_f
       #currency = exchange_rate.attribute("CharCode").value
-      add_rate("RUB", currency, rate) if CURRENCIES.include?(currency)
+      if CURRENCIES.include?(currency)
+        add_rate("RUB", currency, rate)
+      else
+        debugger
+      end
     end
     add_rate("RUB", "RUB", 1)
     @last_updated = Time.now
