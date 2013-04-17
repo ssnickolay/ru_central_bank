@@ -62,18 +62,24 @@ class EuCentralBank < Money::Bank::VariableExchange
   def exchange_rates(cache=nil)
     rates_source = !!cache ? cache : ECB_RATES_URL
     doc = Nokogiri::XML(open(rates_source))
-    doc.xpath('xmlns:ValCurs//xmlns:Valute')
+    doc.xpath('ValCurs/Valute')
   end
 
   def exchange_rates_from_s(content)
     doc = Nokogiri::XML(content)
-    doc.xpath('xmlns:ValCurs//xmlns:Valute')
+    doc.xpath('/ValCurs/Valute')
   end
 
   def update_parsed_rates(rates)
+    debugger
     rates.each do |exchange_rate|
-      rate = exchange_rate.attribute("Value").value.to_f
-      currency = exchange_rate.attribute("CharCode").value
+      xml_exchange_rate = Nokogiri::XML(exchange_rate)
+
+      currency = xml_exchange_rate.xpath('/CharCode').content
+      rate = xml_exchange_rate.xpath('/Value').content.to_f
+
+      #rate = exchange_rate.attribute("Value").value.to_f
+      #currency = exchange_rate.attribute("CharCode").value
       debugger
       add_rate("RUB", currency, rate)
     end
