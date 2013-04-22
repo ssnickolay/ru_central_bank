@@ -73,13 +73,12 @@ class EuCentralBank < Money::Bank::VariableExchange
   def update_parsed_rates(rates)
     rates.each do |exchange_rate|
       currency = exchange_rate.search('CharCode').children[0].content
-      rate = exchange_rate.search('Value').children[0].content.to_f
-
-      string_rate = exchange_rate.attribute("Value").value
+      string_rate = exchange_rate.search('Value').children[0].content.to_f
       string_rate[","] = "."
       rate = string_rate.to_f
 
-      currency = exchange_rate.attribute("CharCode").value
+      #rate = exchange_rate.attribute("Value").value.to_f
+      #currency = exchange_rate.attribute("CharCode").value
 
       debugger
       add_rate("RUB", currency, rate)
