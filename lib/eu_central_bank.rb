@@ -75,13 +75,14 @@ class EuCentralBank < Money::Bank::VariableExchange
       currency = exchange_rate.search('CharCode').children[0].content
       rate = exchange_rate.search('Value').children[0].content.to_f
 
-      #rate = exchange_rate.attribute("Value").value.to_f
-      #currency = exchange_rate.attribute("CharCode").value
-      if CURRENCIES.include?(currency)
-        add_rate("RUB", currency, rate)
-      else
-        debugger
-      end
+      string_rate = exchange_rate.attribute("Value").value
+      string_rate[","] = "."
+      rate = string_rate.to_f
+
+      currency = exchange_rate.attribute("CharCode").value
+
+      debugger
+      add_rate("RUB", currency, rate)
     end
     add_rate("RUB", "RUB", 1)
     @last_updated = Time.now
