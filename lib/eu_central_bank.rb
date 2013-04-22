@@ -39,8 +39,8 @@ class EuCentralBank < Money::Bank::VariableExchange
   def exchange_with(from, to_currency)
     rate = get_rate(from.currency, to_currency)
     unless rate
-      from_base_rate = get_rate("EUR", from.currency)
-      to_base_rate = get_rate("EUR", to_currency)
+      from_base_rate = get_rate("RUB", from.currency)
+      to_base_rate = get_rate("RUB", to_currency)
       rate = to_base_rate / from_base_rate
     end
     Money.new(((Money::Currency.wrap(to_currency).subunit_to_unit.to_f / from.currency.subunit_to_unit.to_f) * from.cents * rate).round, to_currency)
@@ -79,7 +79,7 @@ class EuCentralBank < Money::Bank::VariableExchange
 
       #rate = exchange_rate.attribute("Value").value.to_f
       #currency = exchange_rate.attribute("CharCode").value
-      add_rate(currency, "RUB", rate) if CURRENCIES.include?(currency)
+      add_rate("RUB", currency, rate) if CURRENCIES.include?(currency)
     end
     add_rate("RUB", "RUB", 1)
     @last_updated = Time.now
