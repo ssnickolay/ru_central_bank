@@ -10,7 +10,7 @@ class EuCentralBank < Money::Bank::VariableExchange
   attr_accessor :last_updated
 
   ECB_RATES_URL = 'http://www.cbr.ru/scripts/XML_daily.asp?date_req=17/04/2013'
-  CURRENCIES = %w(USD JPY BGN CZK DKK GBP HUF ILS LTL LVL PLN RON SEK CHF NOK HRK RUB TRY AUD BRL CAD CNY HKD IDR INR KRW MXN MYR NZD PHP SGD THB ZAR)
+  CURRENCIES = %w(USD EUR JPY BGN CZK DKK GBP HUF ILS LTL LVL PLN RON SEK CHF NOK HRK RUB TRY AUD BRL CAD CNY HKD IDR INR KRW MXN MYR NZD PHP SGD THB ZAR)
 
   def update_rates(cache=nil)
     update_parsed_rates(exchange_rates(cache))
@@ -79,7 +79,7 @@ class EuCentralBank < Money::Bank::VariableExchange
 
       #rate = exchange_rate.attribute("Value").value.to_f
       #currency = exchange_rate.attribute("CharCode").value
-      add_rate("RUB", currency, rate) if CURRENCIES.include?(currency)
+      add_rate(currency, "RUB", rate) if CURRENCIES.include?(currency)
     end
     add_rate("RUB", "RUB", 1)
     @last_updated = Time.now
