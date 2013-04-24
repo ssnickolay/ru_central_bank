@@ -13,11 +13,6 @@ class EuCentralBank < Money::Bank::VariableExchange
   CURRENCIES = %w(USD EUR JPY BGN CZK DKK GBP HUF ILS LTL LVL PLN RON SEK CHF NOK HRK RUB TRY AUD BRL CAD CNY HKD IDR INR KRW MXN MYR NZD PHP SGD THB ZAR)
 
 
-  def initialize
-    date_now = Time.now.strftime('%d/%m/%Y')
-    @ecb_rates_url = ECB_RATES_URL + date_now
-  end
-
   def update_rates(cache=nil)
     update_parsed_rates(exchange_rates(cache))
   end
@@ -25,7 +20,7 @@ class EuCentralBank < Money::Bank::VariableExchange
   def save_rates(cache)
     raise InvalidCache if !cache
     File.open(cache, "w") do |file|
-      io = open(@ecb_rates_url) ;
+      io = open(ECB_RATES_URL) ;
       io.each_line {|line| file.puts line}
     end
   end
@@ -35,7 +30,7 @@ class EuCentralBank < Money::Bank::VariableExchange
   end
 
   def save_rates_to_s
-    open(@ecb_rates_url).read
+    open(ECB_RATES_URL).read
   end
 
   def exchange(cents, from_currency, to_currency)
@@ -55,7 +50,7 @@ class EuCentralBank < Money::Bank::VariableExchange
   protected
 
   #def exchange_rates(cache=nil)
-  #  rates_source = !!cache ? cache : @ecb_rates_url
+  #  rates_source = !!cache ? cache : ECB_RATES_URL
   #  doc = Nokogiri::XML(open(rates_source))
   #  doc.xpath('gesmes:Envelope/xmlns:Cube/xmlns:Cube//xmlns:Cube')
   #end
@@ -66,7 +61,9 @@ class EuCentralBank < Money::Bank::VariableExchange
   #end
 
   def exchange_rates(cache=nil)
-    rates_source = !!cache ? cache : @ecb_rates_url
+    rates_source = !!cache ? cache : ECB_RATES_URL
+    rates_source += Time.now.strftime('%d/%m/%Y')
+
     doc = Nokogiri::XML(open(rates_source))
     doc.xpath('ValCurs/Valute')
   end
