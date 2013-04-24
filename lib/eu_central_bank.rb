@@ -13,9 +13,12 @@ class EuCentralBank < Money::Bank::VariableExchange
   CURRENCIES = %w(USD EUR JPY BGN CZK DKK GBP HUF ILS LTL LVL PLN RON SEK CHF NOK HRK RUB TRY AUD BRL CAD CNY HKD IDR INR KRW MXN MYR NZD PHP SGD THB ZAR)
 
 
-  def update_rates(cache=nil)
+  def initialize
     date_now = Time.now.strftime('%d/%m/%Y')
-    ECB_RATES_URL += date_now
+    ECB_RATES_URL.replace(ECB_RATES_URL + date_now)
+  end
+
+  def update_rates(cache=nil)
     update_parsed_rates(exchange_rates(cache))
   end
 
